@@ -12,7 +12,7 @@ public class TSJ {
     private String email;
 
     public TSJ(String html, String val) {
-        adressNumber = html;
-        name = val;
+        adressNumber = val;
+        name = html;
     }
 }

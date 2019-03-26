@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Application {
     /**
      *
-     * @param args
+     * @param args не будет
      * @throws IOException
      * Программа для парсинга названий и электронной почты Управляющей компании
      * на сайте https://vc.tom.ru/pages/
@@ -31,7 +31,7 @@ public class Application {
 
         // Выбирай. Верхняя строчка для УК, либо нижняя для ТСЖ
         String siteAdressLastPart="uk/";
-        //String siteAdressLastPart="tsj/";
+//        String siteAdressLastPart="tsj/";
 
         Document html = Jsoup.connect(siteAdress + siteAdressLastPart).get();
         // <select class="use-select2"
@@ -45,15 +45,17 @@ public class Application {
  */
         for (Element element : useSelect2Element.getElementsByTag("option")) {
             tsjList.add(new TSJ(element.html(), element.val()));
+            System.out.println(element.html()+"    "+ element.val());
+
         }
 
         emailFinder(siteAdress, tsjList);
         saveXLS(tsjList);
-        return;
+
     }
 
     /**
-     * @param siteAdress
+     * @param siteAdress - адресс
      * @param tsjList    List c данными ТСЖ . Нужен заполененный AdressNumber.
      *                   так как он в адресе страницы https://vc.tom.ru/pages/331/
      * @throws IOException Перебираем все ТСЖ из Списка. Заходим на страничку каждого-  siteAdress + tsj.getAdressNumber() + "/"
@@ -81,7 +83,7 @@ public class Application {
 
 
     /**
-     * @param tsjList
+     * @param tsjList список тсж , для вывода
      * @throws IOException Save date to xlsfile (  String fileName = "C:\\D\\xlsforsite\\тсж.xls";)
      *                     Если поле емайл пустое, то не записываем.
      *                     Название файла- String fileName = "C:\\D\\xlsforsite\\тсж.xls";
@@ -94,14 +96,17 @@ public class Application {
         Sheet sheet = hssfWorkbook.createSheet();
         for (TSJ tsj : tsjList) {
 //            не у всех ТСЖ заполнены email. Поэтому проверка на то, что не пустой е-майл.
-            if (!tsj.getEmail().isEmpty()) {
-                Row row = sheet.createRow(rowNumber++);
+            try {
+                if (!tsj.getEmail().isEmpty()) {
+                    Row row = sheet.createRow(rowNumber++);
 
-                cellTemp = row.createCell(0);
-                cellTemp.setCellValue(tsj.getName());
+                    cellTemp = row.createCell(0);
+                    cellTemp.setCellValue(tsj.getName());
 
-                cellTemp = row.createCell(1);
-                cellTemp.setCellValue(tsj.getEmail());
+                    cellTemp = row.createCell(1);
+                    cellTemp.setCellValue(tsj.getEmail());
+                }
+            } catch (NullPointerException e) {
             }
         }
         File file = new File(fileName);
