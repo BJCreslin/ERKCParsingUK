@@ -19,7 +19,8 @@ public class Application {
      *
      * @param args
      * @throws IOException
-     * Программа для парсинга названий и электронной почты ТСЖ на сайте https://vc.tom.ru/pages/
+     * Программа для парсинга названий и электронной почты Управляющей компании
+     * на сайте https://vc.tom.ru/pages/
      * и записи результатов в файл.
      */
     public static void main(String[] args) throws IOException {
@@ -28,7 +29,11 @@ public class Application {
 
         List<TSJ> tsjList = new ArrayList<>();
 
-        Document html = Jsoup.connect(siteAdress + "tsj/").get();
+        // Выбирай. Верхняя строчка для УК, либо нижняя для ТСЖ
+        String siteAdressLastPart="uk/";
+        //String siteAdressLastPart="tsj/";
+
+        Document html = Jsoup.connect(siteAdress + siteAdressLastPart).get();
         // <select class="use-select2"
         Element useSelect2Element = html.getElementsByClass("use-select2").first();
 /*
